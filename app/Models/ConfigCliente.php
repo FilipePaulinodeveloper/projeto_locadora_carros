@@ -23,6 +23,7 @@ class ConfigCliente extends Model
         'cidade',
         'estado',
         'token',
-        'deleted'
+        'deleted',
+        'status',
     ];
 }

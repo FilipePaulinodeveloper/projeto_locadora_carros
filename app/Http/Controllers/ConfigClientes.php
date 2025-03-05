@@ -2,160 +2,36 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CriarClienteRequest;
+use App\Http\Requests\updateClienteRequest;
+use Exception;
+use App\Models\DisabledColumns;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Session;
+use App\Models\Office;
+use App\Service\ClienteService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
+use Inertia\Inertia;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use Illuminate\Support\Facades\Storage;
+use stdClass;
 
 class ConfigClientes extends Controller
 {
+
+    protected $clienteService;
+
+    public function __construct(ClienteService $clienteService)
+    {
+        $this->clienteService = $clienteService;
+    }
+
     public function index(Request $request)
     {
-        $Modulo = "ConfigClientes";
-
-        $permUser = Auth::user()->hasPermissionTo("list.ConfigClientes");
-
-        if (!$permUser) {
-            return redirect()->route("list.Dashboard", ["id" => "1"]);
-        }
-
-        try {
-
-
-
-            $data = Session::all();
-
-            if (!isset($data["ConfigClientes"]) || empty($data["ConfigClientes"])) {
-                session(["ConfigClientes" => array("status" => "0", "orderBy" => array("column" => "created_at", "sorting" => "1"), "limit" => "10")]);
-                $data = Session::all();
-            }
-
-            $Filtros = new Security;
-            if ($request->input()) {
-                $Limpar = false;
-                if ($request->input("limparFiltros") == true) {
-                    $Limpar = true;
-                }
-
-                $arrayFilter = $Filtros->TratamentoDeFiltros($request->input(), $Limpar, ["ConfigClientes"]);
-                if ($arrayFilter) {
-                    session(["ConfigClientes" => $arrayFilter]);
-                    $data = Session::all();
-                }
-            }
-
-
-            $columnsTable = DisabledColumns::whereRouteOfList("list.ConfigClientes")
-                ->first()
-                ?->columns;
-
-            $ConfigClientes = DB::table("config_clientes")
-
-                ->select(DB::raw("config_clientes.*, DATE_FORMAT(config_clientes.created_at, '%d/%m/%Y - %H:%i:%s') as data_final
-
-            "));
-
-            if (isset($data["ConfigClientes"]["orderBy"])) {
-                $Coluna = $data["ConfigClientes"]["orderBy"]["column"];
-                $ConfigClientes =  $ConfigClientes->orderBy("config_clientes.$Coluna", $data["ConfigClientes"]["orderBy"]["sorting"] ? "asc" : "desc");
-            } else {
-                $ConfigClientes =  $ConfigClientes->orderBy("config_clientes.created_at", "desc");
-            }
-
-            //MODELO DE FILTRO PARA VOCE COLOCAR AQUI, PARA CADA COLUNA DO BANCO DE DADOS DEVERÁ TER UM IF PARA APLICAR O FILTRO, EXCLUIR O FILTRO DE ID, DELETED E UPDATED_AT
-
-            if (isset($data["ConfigClientes"]["nome"])) {
-                $AplicaFiltro = $data["ConfigClientes"]["nome"];
-                $ConfigClientes = $ConfigClientes->Where("config_clientes.nome",  "like", "%" . $AplicaFiltro . "%");
-            }
-
-
-            if (isset($data["ConfigClientes"]["cpf"])) {
-                $AplicaFiltro = $data["ConfigClientes"]["cpf"];
-                $ConfigClientes = $ConfigClientes->where("config_clientes.cpf", "like", "%" . $AplicaFiltro . "%");
-            }
-
-            if (isset($data["ConfigClientes"]["data_nascimento"])) {
-                $AplicaFiltro = $data["ConfigClientes"]["data_nascimento"];
-                $ConfigClientes = $ConfigClientes->whereDate("config_clientes.data_nascimento", $AplicaFiltro);
-            }
-
-            if (isset($data["ConfigClientes"]["telefone"])) {
-                $AplicaFiltro = $data["ConfigClientes"]["telefone"];
-                $ConfigClientes = $ConfigClientes->where("config_clientes.telefone", "like", "%" . $AplicaFiltro . "%");
-            }
-
-            if (isset($data["ConfigClientes"]["email"])) {
-                $AplicaFiltro = $data["ConfigClientes"]["email"];
-                $ConfigClientes = $ConfigClientes->where("config_clientes.email", "like", "%" . $AplicaFiltro . "%");
-            }
-
-            // Campos de endereço
-            if (isset($data["ConfigClientes"]["logradouro"])) {
-                $AplicaFiltro = $data["ConfigClientes"]["logradouro"];
-                $ConfigClientes = $ConfigClientes->where("config_clientes.logradouro", "like", "%" . $AplicaFiltro . "%");
-            }
-
-            if (isset($data["ConfigClientes"]["numero"])) {
-                $AplicaFiltro = $data["ConfigClientes"]["numero"];
-                $ConfigClientes = $ConfigClientes->where("config_clientes.numero", "like", "%" . $AplicaFiltro . "%");
-            }
-
-            if (isset($data["ConfigClientes"]["complemento"])) {
-                $AplicaFiltro = $data["ConfigClientes"]["complemento"];
-                $ConfigClientes = $ConfigClientes->where("config_clientes.complemento", "like", "%" . $AplicaFiltro . "%");
-            }
-
-            if (isset($data["ConfigClientes"]["bairro"])) {
-                $AplicaFiltro = $data["ConfigClientes"]["bairro"];
-                $ConfigClientes = $ConfigClientes->where("config_clientes.bairro", "like", "%" . $AplicaFiltro . "%");
-            }
-
-            if (isset($data["ConfigClientes"]["cep"])) {
-                $AplicaFiltro = $data["ConfigClientes"]["cep"];
-                $ConfigClientes = $ConfigClientes->where("config_clientes.cep", "like", "%" . $AplicaFiltro . "%");
-            }
-
-            if (isset($data["ConfigClientes"]["cidade"])) {
-                $AplicaFiltro = $data["ConfigClientes"]["cidade"];
-                $ConfigClientes = $ConfigClientes->where("config_clientes.cidade", "like", "%" . $AplicaFiltro . "%");
-            }
-
-            if (isset($data["ConfigClientes"]["estado"])) {
-                $AplicaFiltro = $data["ConfigClientes"]["estado"];
-                $ConfigClientes = $ConfigClientes->where("config_clientes.estado", $AplicaFiltro);
-            }
-
-
-            $ConfigClientes = $ConfigClientes->where("config_clientes.deleted", "0");
-
-            $ConfigClientes = $ConfigClientes->paginate(($data["ConfigClientes"]["limit"] ?: 10))
-                ->appends(["page", "orderBy", "searchBy", "limit"]);
-
-            $Acao = "Acessou a listagem do Módulo de ConfigClientes";
-            $Logs = new logs;
-            $Registra = $Logs->RegistraLog(1, $Modulo, $Acao);
-            $Registros = $this->Registros();
-
-            return Inertia::render("ConfigClientes/List", [
-                "columnsTable" => $columnsTable,
-                "ConfigClientes" => $ConfigClientes,
-
-                "Filtros" => $data["ConfigClientes"],
-                "Registros" => $Registros,
-
-            ]);
-        } catch (Exception $e) {
-
-            $Error = $e->getMessage();
-            $Error = explode("MESSAGE:", $Error);
-
-
-            $Pagina = $_SERVER["REQUEST_URI"];
-
-            $Erro = $Error[0];
-            $Erro_Completo = $e->getMessage();
-            $LogsErrors = new logsErrosController;
-            $Registra = $LogsErrors->RegistraErro($Pagina, $Modulo, $Erro, $Erro_Completo);
-            abort(403, "Erro localizado e enviado ao LOG de Erros");
-        }
+       return $this->clienteService->index($request);
     }
 
     public function Registros()
@@ -190,6 +66,8 @@ class ConfigClientes extends Controller
         return $data;
     }
 
+
+
     public function create()
     {
         $Modulo = "ConfigClientes";
@@ -223,250 +101,33 @@ class ConfigClientes extends Controller
         }
     }
 
-    public function return_id($id)
+
+    public function store(CriarClienteRequest $request)
     {
-        $ConfigClientes = DB::table("config_clientes");
-        $ConfigClientes = $ConfigClientes->where("deleted", "0");
-        $ConfigClientes = $ConfigClientes->where("token", $id)->first();
-
-        return $ConfigClientes->id;
-    }
-
-    public function store(Request $request)
-    {
-        $Modulo = "ConfigClientes";
-
-        $permUser = Auth::user()->hasPermissionTo("create.ConfigClientes");
-
-        if (!$permUser) {
-            return redirect()->route("list.Dashboard", ["id" => "1"]);
-        }
-
-        try {
-
-
-            $data = Session::all();
-
-
-
-
-            $save = new stdClass;
-            //MODELO DE INSERT PARA VOCE FAZER COM TODAS AS COLUNAS DO BANCO DE DADOS, MENOS ID, DELETED E UPDATED_AT
-            $save->nome = $request->nome;
-            $save->nome = $request->nome;
-            $save->cpf = $request->cpf;
-            $save->data_nascimento = $request->data_nascimento;
-            $save->telefone = $request->telefone;
-            $save->email = $request->email;
-
-            // Campos de endereço
-            $save->logradouro = $request->logradouro;
-            $save->numero = $request->numero;
-            $save->complemento = $request->complemento;
-            $save->bairro = $request->bairro;
-            $save->cep = $request->cep;
-            $save->cidade = $request->cidade;
-            $save->estado = $request->estado;
-
-            //ESSAS AQUI SEMPRE TERÃO POR PADRÃO
-            $save->status = $request->status;
-            $save->token = md5(date("Y-m-d H:i:s") . rand(0, 999999999));
-
-            $save = collect($save)->toArray();
-            DB::table("config_clientes")
-                ->insert($save);
-            $lastId = DB::getPdo()->lastInsertId();
-
-            $Acao = "Inseriu um Novo Registro no Módulo de ConfigClientes";
-            $Logs = new logs;
-            $Registra = $Logs->RegistraLog(2, $Modulo, $Acao, $lastId);
-
-            return redirect()->route("list.ConfigClientes");
-        } catch (Exception $e) {
-
-            $Error = $e->getMessage();
-            $Error = explode("MESSAGE:", $Error);
-
-
-            $Pagina = $_SERVER["REQUEST_URI"];
-
-            $Erro = $Error[0];
-            $Erro_Completo = $e->getMessage();
-            $LogsErrors = new logsErrosController;
-            $Registra = $LogsErrors->RegistraErro($Pagina, $Modulo, $Erro, $Erro_Completo);
-            abort(403, "Erro localizado e enviado ao LOG de Erros");
-        }
-
-        return redirect()->route("list.ConfigClientes");
+        $validatedData = $request->validated();
+        return $this->clienteService->store($validatedData);
     }
 
 
 
 
-    public function edit($IDConfigClientes)
+    public function edit($idConfigClientes)
     {
-        $Modulo = "ConfigClientes";
-
-        $permUser = Auth::user()->hasPermissionTo("edit.ConfigClientes");
-
-        if (!$permUser) {
-            return redirect()->route("list.Dashboard", ["id" => "1"]);
-        }
-
-        try {
-
-
-
-            $AcaoID = $this->return_id($IDConfigClientes);
-
-
-
-            $ConfigClientes = DB::table("config_clientes")
-                ->where("token", $IDConfigClientes)
-                ->first();
-
-            $Acao = "Abriu a Tela de Edição do Módulo de ConfigClientes";
-            $Logs = new logs;
-            $Registra = $Logs->RegistraLog(1, $Modulo, $Acao, $AcaoID);
-
-            return Inertia::render("ConfigClientes/Edit", [
-                "ConfigClientes" => $ConfigClientes,
-
-            ]);
-        } catch (Exception $e) {
-
-            $Error = $e->getMessage();
-            $Error = explode("MESSAGE:", $Error);
-
-            $Pagina = $_SERVER["REQUEST_URI"];
-
-            $Erro = $Error[0];
-            $Erro_Completo = $e->getMessage();
-            $LogsErrors = new logsErrosController;
-            $Registra = $LogsErrors->RegistraErro($Pagina, $Modulo, $Erro, $Erro_Completo);
-            abort(403, "Erro localizado e enviado ao LOG de Erros");
-        }
+        return $this->clienteService->edit($idConfigClientes);
     }
 
 
-    public function update(Request $request, $id)
+    public function update(updateClienteRequest $request, $id)
     {
-
-        $Modulo = "ConfigClientes";
-
-        $permUser = Auth::user()->hasPermissionTo("edit.ConfigClientes");
-
-        if (!$permUser) {
-            return redirect()->route("list.Dashboard", ["id" => "1"]);
-        }
-
-
-        try {
-
-
-            $AcaoID = $this->return_id($id);
-
-
-
-            $save = new stdClass;
-
-
-            //MODELO DE INSERT PARA VOCE FAZER COM TODAS AS COLUNAS DO BANCO DE DADOS, MENOS ID, DELETED E UPDATED_AT
-            $save->nome = $request->nome;
-            $save->nome = $request->nome;
-            $save->cpf = $request->cpf;
-            $save->data_nascimento = $request->data_nascimento;
-            $save->telefone = $request->telefone;
-            $save->email = $request->email;
-
-            // Campos de endereço
-            $save->logradouro = $request->logradouro;
-            $save->numero = $request->numero;
-            $save->complemento = $request->complemento;
-            $save->bairro = $request->bairro;
-            $save->cep = $request->cep;
-            $save->cidade = $request->cidade;
-            $save->estado = $request->estado;
-
-
-            //ESSAS AQUI SEMPRE TERÃO POR PADRÃO
-            $save->status = $request->status;
-
-            $save = collect($save)->toArray();
-            DB::table("config_clientes")
-                ->where("token", $id)
-                ->update($save);
-
-
-
-            $Acao = "Editou um registro no Módulo de ConfigClientes";
-            $Logs = new logs;
-            $Registra = $Logs->RegistraLog(3, $Modulo, $Acao, $AcaoID);
-
-            return redirect()->route("list.ConfigClientes");
-        } catch (Exception $e) {
-
-            $Error = $e->getMessage();
-            $Error = explode("MESSAGE:", $Error);
-
-            $Pagina = $_SERVER["REQUEST_URI"];
-
-            $Erro = $Error[0];
-            $Erro_Completo = $e->getMessage();
-            $LogsErrors = new logsErrosController;
-            $Registra = $LogsErrors->RegistraErro($Pagina, $Modulo, $Erro, $Erro_Completo);
-            abort(403, "Erro localizado e enviado ao LOG de Erros");
-        }
+       $validatedData = $request->validated();
+       return $this->clienteService->update($validatedData, $id);
     }
-
-
-
 
 
     public function delete($IDConfigClientes)
     {
-        $Modulo = "ConfigClientes";
-
-        $permUser = Auth::user()->hasPermissionTo("delete.ConfigClientes");
-
-        if (!$permUser) {
-            return redirect()->route("list.Dashboard", ["id" => "1"]);
-        }
-
-        try {
-
-            $AcaoID = $this->return_id($IDConfigClientes);
-
-            DB::table("config_clientes")
-                ->where("token", $IDConfigClientes)
-                ->update([
-                    "deleted" => "1",
-                ]);
-
-
-
-            $Acao = "Excluiu um registro no Módulo de ConfigClientes";
-            $Logs = new logs;
-            $Registra = $Logs->RegistraLog(4, $Modulo, $Acao, $AcaoID);
-
-            return redirect()->route("list.ConfigClientes");
-        } catch (Exception $e) {
-
-            $Error = $e->getMessage();
-            $Error = explode("MESSAGE:", $Error);
-
-            $Pagina = $_SERVER["REQUEST_URI"];
-
-            $Erro = $Error[0];
-            $Erro_Completo = $e->getMessage();
-            $LogsErrors = new logsErrosController;
-            $Registra = $LogsErrors->RegistraErro($Pagina, $Modulo, $Erro, $Erro_Completo);
-
-            abort(403, "Erro localizado e enviado ao LOG de Erros");
-        }
+       return $this->clienteService->destroy($IDConfigClientes);
     }
-
-
 
     public function deleteSelected($IDConfigClientes = null)
     {
