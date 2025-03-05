@@ -456,6 +456,67 @@
                                 </div>
                                 </th>
 
+                                <th v-if="formColumns?.columns?.logradouro" scope="col"
+    class="px-4 text-sm cursor-pointer text-center border-r group"
+    @click="orderBy = { column: 'logradouro', sorting: sortTable(sortVal.logradouro) ? sortVal.logradouro = 1 : sortVal.logradouro = 0 }">
+    <div class="flex">
+        <span class="group-hover:text-indigo-800">Logradouro</span>
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-auto group-hover:text-indigo-800" fill="none"
+            viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12" />
+        </svg>
+    </div>
+</th>
+
+<th v-if="formColumns?.columns?.numero" scope="col"
+    class="px-4 text-sm cursor-pointer text-center border-r group"
+    @click="orderBy = { column: 'numero', sorting: sortTable(sortVal.numero) ? sortVal.numero = 1 : sortVal.numero = 0 }">
+    <div class="flex">
+        <span class="group-hover:text-indigo-800">Número</span>
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-auto group-hover:text-indigo-800" fill="none"
+            viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12" />
+        </svg>
+    </div>
+</th>
+
+<th v-if="formColumns?.columns?.complemento" scope="col"
+    class="px-4 text-sm cursor-pointer text-center border-r group"
+    @click="orderBy = { column: 'complemento', sorting: sortTable(sortVal.complemento) ? sortVal.complemento = 1 : sortVal.complemento = 0 }">
+    <div class="flex">
+        <span class="group-hover:text-indigo-800">Complemento</span>
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-auto group-hover:text-indigo-800" fill="none"
+            viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12" />
+        </svg>
+    </div>
+</th>
+
+<th v-if="formColumns?.columns?.bairro" scope="col"
+    class="px-4 text-sm cursor-pointer text-center border-r group"
+    @click="orderBy = { column: 'bairro', sorting: sortTable(sortVal.bairro) ? sortVal.bairro = 1 : sortVal.bairro = 0 }">
+    <div class="flex">
+        <span class="group-hover:text-indigo-800">Bairro</span>
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-auto group-hover:text-indigo-800" fill="none"
+            viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12" />
+        </svg>
+    </div>
+</th>
+
+<th v-if="formColumns?.columns?.cep" scope="col"
+    class="px-4 text-sm cursor-pointer text-center border-r group"
+    @click="orderBy = { column: 'cep', sorting: sortTable(sortVal.cep) ? sortVal.cep = 1 : sortVal.cep = 0 }">
+    <div class="flex">
+        <span class="group-hover:text-indigo-800">CEP</span>
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-auto group-hover:text-indigo-800" fill="none"
+            viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12" />
+        </svg>
+    </div>
+</th>
+
+
 
 
 
@@ -530,7 +591,7 @@
                                 class="whitespace-nowrap py-4 pl-4 pr-3 text-sm sm:pl-6">
                                 <div class="flex items-center">
                                     <div>
-                                    <div class="font-medium text-gray-900">{{ data?.data_nascimento }}</div>
+                                    <div class="font-medium text-gray-900">{{ formatarData(data?.data_nascimento)}}</div>
                                     </div>
                                 </div>
                                 </td>
@@ -549,6 +610,24 @@
                                 <div class="flex items-center">
                                     <div>
                                     <div class="font-medium text-gray-900">{{ data?.email }}</div>
+                                    </div>
+                                </div>
+                                </td>
+
+                                <td v-if="formColumns?.columns?.cidade"
+                                class="whitespace-nowrap py-4 pl-4 pr-3 text-sm sm:pl-6">
+                                <div class="flex items-center">
+                                    <div>
+                                    <div class="font-medium text-gray-900">{{ data?.cidade }}</div>
+                                    </div>
+                                </div>
+                                </td>
+
+                                <td v-if="formColumns?.columns?.estado"
+                                class="whitespace-nowrap py-4 pl-4 pr-3 text-sm sm:pl-6">
+                                <div class="flex items-center">
+                                    <div>
+                                    <div class="font-medium text-gray-900">{{ data?.estado }}</div>
                                     </div>
                                 </div>
                                 </td>
@@ -597,25 +676,6 @@
                                     </div>
                                 </div>
                                 </td>
-
-                                <td v-if="formColumns?.columns?.cidade"
-                                class="whitespace-nowrap py-4 pl-4 pr-3 text-sm sm:pl-6">
-                                <div class="flex items-center">
-                                    <div>
-                                    <div class="font-medium text-gray-900">{{ data?.cidade }}</div>
-                                    </div>
-                                </div>
-                                </td>
-
-                                <td v-if="formColumns?.columns?.estado"
-                                class="whitespace-nowrap py-4 pl-4 pr-3 text-sm sm:pl-6">
-                                <div class="flex items-center">
-                                    <div>
-                                    <div class="font-medium text-gray-900">{{ data?.estado }}</div>
-                                    </div>
-                                </div>
-                                </td>
-
 
 
 
@@ -771,7 +831,7 @@ const formColumns = useForm({
 const form2 = useForm({
   nome: props.Filtros?.nome || null,
   cpf: props.Filtros?.cpf || null,
-  data_nascimento: props.Filtros?.data_nascimento || null,
+  data_nascimento:props.Filtros?.data_nascimento || null,
   telefone: props.Filtros?.telefone || null,
   email: props.Filtros?.email || null,
   token: props.Filtros?.token || null,
@@ -787,6 +847,21 @@ const form2 = useForm({
   created_at: props.Filtros?.created_at || null,
   limparFiltros: "",
 });
+
+
+function formatarData(dataBanco) {
+
+    if (!dataBanco) return ''; // Evita erro se a entrada for nula ou indefinida
+
+    const data = new Date(dataBanco);
+    if (isNaN(data)) return 'Data inválida'; // Caso a data seja inválida
+
+    const dia = String(data.getUTCDate()).padStart(2, '0');
+    const mes = String(data.getUTCMonth() + 1).padStart(2, '0'); // Mês começa do zero
+    const ano = data.getUTCFullYear();
+
+    return `${dia}/${mes}/${ano}`;
+}
 
 function validateColumnsVisibility(column) {
 	let columnValue = Inertia.page.props.columnsTable?.[column];

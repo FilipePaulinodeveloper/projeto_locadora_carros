@@ -34,40 +34,6 @@ class ConfigClientes extends Controller
        return $this->clienteService->index($request);
     }
 
-    public function Registros()
-    {
-
-        $mes = date("m");
-        $Total = DB::table("config_clientes")
-            ->where("config_clientes.deleted", "0")
-            ->count();
-
-        $Ativos = DB::table("config_clientes")
-            ->where("config_clientes.deleted", "0")
-            ->where("config_clientes.status", "0")
-            ->count();
-
-        $Inativos = DB::table("config_clientes")
-            ->where("config_clientes.deleted", "0")
-            ->where("config_clientes.status", "1")
-            ->count();
-
-        $EsseMes = DB::table("config_clientes")
-            ->where("config_clientes.deleted", "0")
-            ->whereMonth("config_clientes.created_at", $mes)
-            ->count();
-
-
-        $data = new stdClass;
-        $data->total = number_format($Total, 0, ",", ".");
-        $data->ativo = number_format($Ativos, 0, ",", ".");
-        $data->inativo = number_format($Inativos, 0, ",", ".");
-        $data->mes = number_format($EsseMes, 0, ",", ".");
-        return $data;
-    }
-
-
-
     public function create()
     {
         $Modulo = "ConfigClientes";
@@ -101,7 +67,6 @@ class ConfigClientes extends Controller
         }
     }
 
-
     public function store(CriarClienteRequest $request)
     {
         $validatedData = $request->validated();
@@ -123,7 +88,6 @@ class ConfigClientes extends Controller
        return $this->clienteService->update($validatedData, $id);
     }
 
-
     public function delete($IDConfigClientes)
     {
        return $this->clienteService->destroy($IDConfigClientes);
@@ -131,125 +95,19 @@ class ConfigClientes extends Controller
 
     public function deleteSelected($IDConfigClientes = null)
     {
-        $Modulo = "ConfigClientes";
-
-        $permUser = Auth::user()->hasPermissionTo("delete.ConfigClientes");
-
-        if (!$permUser) {
-            return redirect()->route("list.Dashboard", ["id" => "1"]);
-        }
-
-        try {
-
-            $IDsRecebidos = explode(",", $IDConfigClientes);
-            $total = count(array_filter($IDsRecebidos));
-            if ($total > 0) {
-                foreach ($IDsRecebidos as $id) {
-                    $AcaoID = $this->return_id($id);
-                    DB::table("config_clientes")
-                        ->where("token", $id)
-                        ->update([
-                            "deleted" => "1",
-                        ]);
-                    $Acao = "Excluiu um registro no Módulo de ConfigClientes";
-                    $Logs = new logs;
-                    $Registra = $Logs->RegistraLog(4, $Modulo, $Acao, $AcaoID);
-                }
-            }
-
-            return redirect()->route("list.ConfigClientes");
-        } catch (Exception $e) {
-
-            $Error = $e->getMessage();
-            $Error = explode("MESSAGE:", $Error);
-
-            $Pagina = $_SERVER["REQUEST_URI"];
-
-            $Erro = $Error[0];
-            $Erro_Completo = $e->getMessage();
-            $LogsErrors = new logsErrosController;
-            $Registra = $LogsErrors->RegistraErro($Pagina, $Modulo, $Erro, $Erro_Completo);
-
-            abort(403, "Erro localizado e enviado ao LOG de Erros");
-        }
+      return $this->clienteService->deleteSelected($IDConfigClientes);
     }
+
+
 
     public function deletarTodos()
     {
-        $Modulo = "ConfigClientes";
-
-        $permUser = Auth::user()->hasPermissionTo("delete.ConfigClientes");
-
-        if (!$permUser) {
-            return redirect()->route("list.Dashboard", ["id" => "1"]);
-        }
-
-        try {
-
-            DB::table("config_clientes")
-                ->update([
-                    "deleted" => "1",
-                ]);
-            $Acao = "Excluiu TODOS os registros no Módulo de ConfigClientes";
-            $Logs = new logs;
-            $Registra = $Logs->RegistraLog(4, $Modulo, $Acao, 0);
-
-
-
-            return redirect()->route("list.ConfigClientes");
-        } catch (Exception $e) {
-
-            $Error = $e->getMessage();
-            $Error = explode("MESSAGE:", $Error);
-
-            $Pagina = $_SERVER["REQUEST_URI"];
-
-            $Erro = $Error[0];
-            $Erro_Completo = $e->getMessage();
-            $LogsErrors = new logsErrosController;
-            $Registra = $LogsErrors->RegistraErro($Pagina, $Modulo, $Erro, $Erro_Completo);
-
-            abort(403, "Erro localizado e enviado ao LOG de Erros");
-        }
+       return $this->clienteService->deletarTodos();
     }
 
     public function RestaurarTodos()
     {
-        $Modulo = "ConfigClientes";
-
-        $permUser = Auth::user()->hasPermissionTo("delete.ConfigClientes");
-
-        if (!$permUser) {
-            return redirect()->route("list.Dashboard", ["id" => "1"]);
-        }
-
-        try {
-
-            DB::table("config_clientes")
-                ->update([
-                    "deleted" => "0",
-                ]);
-            $Acao = "Restaurou TODOS os registros no Módulo de ConfigClientes";
-            $Logs = new logs;
-            $Registra = $Logs->RegistraLog(4, $Modulo, $Acao, 0);
-
-
-
-            return redirect()->route("list.ConfigClientes");
-        } catch (Exception $e) {
-
-            $Error = $e->getMessage();
-            $Error = explode("MESSAGE:", $Error);
-
-            $Pagina = $_SERVER["REQUEST_URI"];
-
-            $Erro = $Error[0];
-            $Erro_Completo = $e->getMessage();
-            $LogsErrors = new logsErrosController;
-            $Registra = $LogsErrors->RegistraErro($Pagina, $Modulo, $Erro, $Erro_Completo);
-
-            abort(403, "Erro localizado e enviado ao LOG de Erros");
-        }
+       return $this->clienteService->restaurarTodos();
     }
 
     public function DadosRelatorio()

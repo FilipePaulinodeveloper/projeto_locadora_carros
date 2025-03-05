@@ -313,6 +313,69 @@ class ClienteService
         }
     }
 
+    public function deleteSelected($id)
+    {
+        $this->verifyPermition('delete.ConfigClientes');
+
+        try {
+
+            $idsRecebido = explode(",", $id);
+
+
+            foreach ($idsRecebido as $id) {
+                $acaoId = $this->return_id($id);
+
+                $cliente = $this->cliente->where("token", $id)->first();
+
+                if ($cliente) {
+                    $cliente->update(["deleted" => "1"]);
+                    $this->registerLog(4, "Excluiu um registro no Módulo de ConfigClientes", $acaoId);
+                }
+            }
+
+
+            return redirect()->route("list.ConfigClientes");
+
+        } catch (\Exception $e) {
+            $this->errorHandler($e);
+        }
+    }
+
+
+    public function deletarTodos()
+    {
+        $this->verifyPermition('delete.ConfigClientes');
+
+        try{
+
+             $this->cliente->query()->update(['deleted' => 1]);
+
+            $this->registerLog(4, "Excluiu TODOS os registros no Módulo de ConfigClientes", 0);
+
+            return redirect()->route("list.ConfigClientes");
+
+        } catch (\Exception $e) {
+            $this->errorHandler($e);
+        }
+    }
+
+
+    public function restaurarTodos()
+    {
+        $this->verifyPermition('edit.ConfigClientes');
+
+        try{
+
+             $this->cliente->query()->update(['deleted' => 0]);
+
+            $this->registerLog(3, "Restaurou TODOS os registros no Módulo de ConfigClientes", 0);
+
+            return redirect()->route("list.ConfigClientes");
+
+        } catch (\Exception $e) {
+            $this->errorHandler($e);
+        }
+    }
 
 
 }
