@@ -11,7 +11,7 @@
           <header class="px-5 py-4 border-b border-gray-100 flex items-center">
           <h2>Permissões</h2>
             <div class="ml-auto space-x-2 items-center text-sm">
-              <Checkbox id="selectAll" @click="markAll(range(1, 353))" v-model="selectedAll" placeholder="Select all" class="ml-auto" :binary="true" />
+              <Checkbox id="selectAll" @click="markAll(range(1, 358))" v-model="selectedAll" placeholder="Select all" class="ml-auto" :binary="true" />
               <label for="selectAll" v-if="!selectedAll">Marcar Todos</label>
               <label for="selectAll" v-else>Desmarcar Todos</label>
             </div>
@@ -109,6 +109,36 @@
 
 
 <!-- #ModificaAqui -->
+
+                <tr>
+                        <td class='p-2 whitespace-nowrap'>
+                        <div class='flex items-center'>
+                            <div class='font-medium text-gray-800'>ConfigVeiculos</div>
+                        </div>
+                        </td>
+                        <td class='p-2 text-center'>
+                        <Checkbox @click='markLine(range(354, 358), 8)' v-model='lineChecked' class='ml-auto' :value='8' />
+                        </td>
+                        <td class='p-2 whitespace-nowrap text-center'>
+                        <Checkbox v-model='checked' :value='354' />
+                        </td>
+                        <td class='p-2 whitespace-nowrap text-center'>
+                        <Checkbox v-model='checked' :value='355' />
+
+                        </td>
+                        <td class='p-2 whitespace-nowrap text-center'>
+                        <Checkbox v-model='checked' :value='356' />
+
+                        </td>
+                        <td class='p-2 whitespace-nowrap text-center'>
+                        <Checkbox v-model='checked' :value='357' />
+
+                        </td>
+                        <td class='p-2 whitespace-nowrap text-center'>
+                        <Checkbox v-model='checked' :value='358' />
+
+                        </td>
+                    </tr>
 
 
                   <tr>

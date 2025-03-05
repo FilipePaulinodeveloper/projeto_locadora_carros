@@ -13,6 +13,7 @@ use App\Http\Controllers\SMTP;
 
 use App\Http\Controllers\ConfigCarros;
 use App\Http\Controllers\ConfigClientes;
+use App\Http\Controllers\ConfigVeiculos;
 // ALTERAHEAD
 
 
@@ -168,6 +169,17 @@ Route::get('ConfigClientes', [ConfigClientes::class, 'index'])->name('list.Confi
 	Route::post('ConfigClientes/RestaurarTodos', [ConfigClientes::class, 'RestaurarTodos'])->name('RestaurarTodos.ConfigClientes');
 	Route::get('ConfigClientes/RelatorioExcel', [ConfigClientes::class, 'exportarRelatorioExcel'])->name('get.Excel.ConfigClientes');
 
+    Route::get('ConfigVeiculos', [ConfigVeiculos::class, 'index'])->name('list.ConfigVeiculos');
+	Route::post('ConfigVeiculos', [ConfigVeiculos::class, 'index'])->name('listP.ConfigVeiculos');
+    Route::get('ConfigVeiculos/criar', [ConfigVeiculos::class, 'create'])->name('form.store.ConfigVeiculos');
+    Route::post('ConfigVeiculos/criar', [ConfigVeiculos::class, 'store'])->name('store.ConfigVeiculos');
+    Route::get('ConfigVeiculos/editar/{id}', [ConfigVeiculos::class, 'edit'])->name('form.update.ConfigVeiculos');
+    Route::post('ConfigVeiculos/editar/{id}', [ConfigVeiculos::class, 'update'])->name('update.ConfigVeiculos');
+    Route::post('ConfigVeiculos/deletar/{id}', [ConfigVeiculos::class, 'delete'])->name('delete.ConfigVeiculos');
+	Route::post('ConfigVeiculos/deletarSelecionados/{id?}', [ConfigVeiculos::class, 'deleteSelected'])->name('deleteSelected.ConfigVeiculos');
+	Route::post('ConfigVeiculos/deletarTodos', [ConfigVeiculos::class, 'deletarTodos'])->name('deletarTodos.ConfigVeiculos');
+	Route::post('ConfigVeiculos/RestaurarTodos', [ConfigVeiculos::class, 'RestaurarTodos'])->name('RestaurarTodos.ConfigVeiculos');
+	Route::get('ConfigVeiculos/RelatorioExcel', [ConfigVeiculos::class, 'exportarRelatorioExcel'])->name('get.Excel.ConfigVeiculos');
 
     Route::get('Dashboard/Calendario', [Dashboard::class, 'Calendario'])->name('list.DashboardCalendario');
     Route::get('Dashboard/{id?}', [Dashboard::class, 'index'])->name('list.Dashboard');

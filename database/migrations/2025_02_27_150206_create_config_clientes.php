@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('telefone',15)->nullable();
             $table->string('email')->unique()->nullable();
             $table->string('token');
-            $table->boolean('deleted')->default(0)->change();
+            $table->boolean('deleted');
             $table->boolean('status');
 
             // Campos de endereço detalhados
