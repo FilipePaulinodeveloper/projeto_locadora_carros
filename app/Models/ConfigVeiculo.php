@@ -9,6 +9,8 @@ class ConfigVeiculo extends Model
 {
     use HasFactory;
 
+    protected $table = 'config_veiculos';
+
     protected $fillable = [
         'tipo',
         'marca',

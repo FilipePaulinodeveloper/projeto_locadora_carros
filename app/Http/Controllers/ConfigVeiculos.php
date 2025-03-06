@@ -261,5 +261,11 @@ class ConfigVeiculos extends Controller
 
         return redirect()->route("download2.files", ["path" => $nomeArquivo]);
     }
+
+
+    public function getVeiculos()
+    {
+        return $this->veiculoService->getVeiculos();
+    }
 }
 

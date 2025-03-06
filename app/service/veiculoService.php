@@ -381,5 +381,17 @@ class VeiculoService
         }
     }
 
+    public function getVeiculos()
+    {   
+        try{
+            $veiculos = $this->veiculo->select('id', 'placa')->where('deleted', 0)->get();
+            return response()->json($veiculos);
+
+        }
+        catch (\Exception $e) {
+            return $e;
+        }
+    }
+
 
 }

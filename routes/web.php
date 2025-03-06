@@ -13,6 +13,7 @@ use App\Http\Controllers\SMTP;
 
 use App\Http\Controllers\ConfigCarros;
 use App\Http\Controllers\ConfigClientes;
+use App\Http\Controllers\ConfigManutencoes;
 use App\Http\Controllers\ConfigVeiculos;
 // ALTERAHEAD
 
@@ -180,6 +181,21 @@ Route::get('ConfigClientes', [ConfigClientes::class, 'index'])->name('list.Confi
 	Route::post('ConfigVeiculos/deletarTodos', [ConfigVeiculos::class, 'deletarTodos'])->name('deletarTodos.ConfigVeiculos');
 	Route::post('ConfigVeiculos/RestaurarTodos', [ConfigVeiculos::class, 'RestaurarTodos'])->name('RestaurarTodos.ConfigVeiculos');
 	Route::get('ConfigVeiculos/RelatorioExcel', [ConfigVeiculos::class, 'exportarRelatorioExcel'])->name('get.Excel.ConfigVeiculos');
+    Route::get('ConfigVeiculos/nome', [ConfigVeiculos::class, 'getVeiculos'])->name('get.nome.ConfigVeiculo');
+
+
+
+    Route::get('ConfigManutencoes', [ConfigManutencoes::class, 'index'])->name('list.ConfigManutencoes');
+	Route::post('ConfigManutencoes', [ConfigManutencoes::class, 'index'])->name('listP.ConfigManutencoes');
+    Route::get('ConfigManutencoes/criar', [ConfigManutencoes::class, 'create'])->name('form.store.ConfigManutencoes');
+    Route::post('ConfigManutencoes/criar', [ConfigManutencoes::class, 'store'])->name('store.ConfigManutencoes');
+    Route::get('ConfigManutencoes/editar/{id}', [ConfigManutencoes::class, 'edit'])->name('form.update.ConfigManutencoes');
+    Route::post('ConfigManutencoes/editar/{id}', [ConfigManutencoes::class, 'update'])->name('update.ConfigManutencoes');
+    Route::post('ConfigManutencoes/deletar/{id}', [ConfigManutencoes::class, 'delete'])->name('delete.ConfigManutencoes');
+	Route::post('ConfigManutencoes/deletarSelecionados/{id?}', [ConfigManutencoes::class, 'deleteSelected'])->name('deleteSelected.ConfigManutencoes');
+	Route::post('ConfigManutencoes/deletarTodos', [ConfigManutencoes::class, 'deletarTodos'])->name('deletarTodos.ConfigManutencoes');
+	Route::post('ConfigManutencoes/RestaurarTodos', [ConfigManutencoes::class, 'RestaurarTodos'])->name('RestaurarTodos.ConfigManutencoes');
+	Route::get('ConfigManutencoes/RelatorioExcel', [ConfigManutencoes::class, 'exportarRelatorioExcel'])->name('get.Excel.ConfigManutencoes');
 
     Route::get('Dashboard/Calendario', [Dashboard::class, 'Calendario'])->name('list.DashboardCalendario');
     Route::get('Dashboard/{id?}', [Dashboard::class, 'index'])->name('list.Dashboard');
