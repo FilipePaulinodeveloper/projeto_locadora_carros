@@ -13,6 +13,7 @@ use App\Http\Controllers\SMTP;
 
 use App\Http\Controllers\ConfigCarros;
 use App\Http\Controllers\ConfigClientes;
+use App\Http\Controllers\ConfigFuncionarios;
 use App\Http\Controllers\ConfigManutencoes;
 use App\Http\Controllers\ConfigVeiculos;
 use App\Http\Controllers\ConfigVendas;
@@ -210,6 +211,19 @@ Route::get('ConfigClientes', [ConfigClientes::class, 'index'])->name('list.Confi
 	Route::post('ConfigVendas/deletarTodos', [ConfigVendas::class, 'deletarTodos'])->name('deletarTodos.ConfigVendas');
 	Route::post('ConfigVendas/RestaurarTodos', [ConfigVendas::class, 'RestaurarTodos'])->name('RestaurarTodos.ConfigVendas');
 	Route::get('ConfigVendas/RelatorioExcel', [ConfigVendas::class, 'exportarRelatorioExcel'])->name('get.Excel.ConfigVendas');
+
+
+    Route::get('ConfigFuncionarios', [ConfigFuncionarios::class, 'index'])->name('list.ConfigFuncionarios');
+	Route::post('ConfigFuncionarios', [ConfigFuncionarios::class, 'index'])->name('listP.ConfigFuncionarios');
+    Route::get('ConfigFuncionarios/criar', [ConfigFuncionarios::class, 'create'])->name('form.store.ConfigFuncionarios');
+    Route::post('ConfigFuncionarios/criar', [ConfigFuncionarios::class, 'store'])->name('store.ConfigFuncionarios');
+    Route::get('ConfigFuncionarios/editar/{id}', [ConfigFuncionarios::class, 'edit'])->name('form.update.ConfigFuncionarios');
+    Route::post('ConfigFuncionarios/editar/{id}', [ConfigFuncionarios::class, 'update'])->name('update.ConfigFuncionarios');
+    Route::post('ConfigFuncionarios/deletar/{id}', [ConfigFuncionarios::class, 'delete'])->name('delete.ConfigFuncionarios');
+	Route::post('ConfigFuncionarios/deletarSelecionados/{id?}', [ConfigFuncionarios::class, 'deleteSelected'])->name('deleteSelected.ConfigFuncionarios');
+	Route::post('ConfigFuncionarios/deletarTodos', [ConfigFuncionarios::class, 'deletarTodos'])->name('deletarTodos.ConfigFuncionarios');
+	Route::post('ConfigFuncionarios/RestaurarTodos', [ConfigFuncionarios::class, 'RestaurarTodos'])->name('RestaurarTodos.ConfigFuncionarios');
+	Route::get('ConfigFuncionarios/RelatorioExcel', [ConfigFuncionarios::class, 'exportarRelatorioExcel'])->name('get.Excel.ConfigFuncionarios');
 
     Route::get('Dashboard/Calendario', [Dashboard::class, 'Calendario'])->name('list.DashboardCalendario');
     Route::get('Dashboard/{id?}', [Dashboard::class, 'index'])->name('list.Dashboard');
