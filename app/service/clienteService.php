@@ -377,5 +377,17 @@ class ClienteService
         }
     }
 
+    public function getClientes()
+    {
+        try{
+            $cliente = $this->cliente->select('id', 'nome')->where('deleted', 0)->get();
+            return response()->json($cliente);
+
+        }
+        catch (\Exception $e) {
+            return $e;
+        }
+    }
+
 
 }

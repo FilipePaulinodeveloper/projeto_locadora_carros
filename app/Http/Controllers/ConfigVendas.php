@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 use App\Models\Office;
-use App\Service\ClienteService;
+use App\Service\vendaService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Inertia\Inertia;
@@ -19,25 +19,25 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
 use Illuminate\Support\Facades\Storage;
 use stdClass;
 
-class ConfigClientes extends Controller
+class ConfigVendas extends Controller
 {
 
-    protected $clienteService;
+    protected $vendaService;
 
-    public function __construct(ClienteService $clienteService)
+    public function __construct(vendaService $vendaService)
     {
-        $this->clienteService = $clienteService;
+        $this->vendaService = $vendaService;
     }
 
     public function index(Request $request)
     {
-       return $this->clienteService->index($request);
+       return $this->vendaService->index($request);
     }
 
     public function create()
     {
-        $Modulo = "ConfigClientes";
-        $permUser = Auth::user()->hasPermissionTo("create.ConfigClientes");
+        $Modulo = "ConfigVendas";
+        $permUser = Auth::user()->hasPermissionTo("create.ConfigVendas");
 
         if (!$permUser) {
             return redirect()->route("list.Dashboard", ["id" => "1"]);
@@ -46,11 +46,11 @@ class ConfigClientes extends Controller
 
 
 
-            $Acao = "Abriu a Tela de Cadastro do Módulo de ConfigClientes";
+            $Acao = "Abriu a Tela de Cadastro do Módulo de ConfigVendas";
             $Logs = new logs;
             $Registra = $Logs->RegistraLog(1, $Modulo, $Acao);
 
-            return Inertia::render("ConfigClientes/Create", []);
+            return Inertia::render("ConfigVendas/Create", []);
         } catch (Exception $e) {
 
             $Error = $e->getMessage();
@@ -70,51 +70,51 @@ class ConfigClientes extends Controller
     public function store(CriarClienteRequest $request)
     {
         $validatedData = $request->validated();
-        return $this->clienteService->store($validatedData);
+        return $this->vendaService->store($validatedData);
     }
 
 
 
 
-    public function edit($idConfigClientes)
+    public function edit($idConfigVendas)
     {
-        return $this->clienteService->edit($idConfigClientes);
+        return $this->vendaService->edit($idConfigVendas);
     }
 
 
     public function update(updateClienteRequest $request, $id)
     {
        $validatedData = $request->validated();
-       return $this->clienteService->update($validatedData, $id);
+       return $this->vendaService->update($validatedData, $id);
     }
 
-    public function delete($IDConfigClientes)
+    public function delete($IDConfigVendas)
     {
-       return $this->clienteService->destroy($IDConfigClientes);
+       return $this->vendaService->destroy($IDConfigVendas);
     }
 
-    public function deleteSelected($IDConfigClientes = null)
+    public function deleteSelected($IDConfigVendas = null)
     {
-      return $this->clienteService->deleteSelected($IDConfigClientes);
+      return $this->vendaService->deleteSelected($IDConfigVendas);
     }
 
 
 
     public function deletarTodos()
     {
-       return $this->clienteService->deletarTodos();
+       return $this->vendaService->deletarTodos();
     }
 
     public function RestaurarTodos()
     {
-       return $this->clienteService->restaurarTodos();
+       return $this->vendaService->restaurarTodos();
     }
 
     public function DadosRelatorio()
     {
         $data = Session::all();
 
-        $ConfigClientes = DB::table("config_clientes")
+        $ConfigVendas = DB::table("config_clientes")
 
             ->select(DB::raw("config_clientes.*, DATE_FORMAT(config_clientes.created_at, '%d/%m/%Y - %H:%i:%s') as data_final
 
@@ -124,74 +124,74 @@ class ConfigClientes extends Controller
         //MODELO DE FILTRO PARA VOCE COLOCAR AQUI, PARA CADA COLUNA DO BANCO DE DADOS DEVERÁ TER UM IF PARA APLICAR O FILTRO, EXCLUIR O FILTRO DE ID, DELETED E UPDATED_AT
 
 
-        if (isset($data["ConfigClientes"]["nome"])) {
-            $AplicaFiltro = $data["ConfigClientes"]["nome"];
-            $ConfigClientes = $ConfigClientes->Where("config_clientes.nome",  "like", "%" . $AplicaFiltro . "%");
+        if (isset($data["ConfigVendas"]["nome"])) {
+            $AplicaFiltro = $data["ConfigVendas"]["nome"];
+            $ConfigVendas = $ConfigVendas->Where("config_clientes.nome",  "like", "%" . $AplicaFiltro . "%");
         }
 
 
-        if (isset($data["ConfigClientes"]["cpf"])) {
-            $AplicaFiltro = $data["ConfigClientes"]["cpf"];
-            $ConfigClientes = $ConfigClientes->where("config_clientes.cpf", "like", "%" . $AplicaFiltro . "%");
+        if (isset($data["ConfigVendas"]["cpf"])) {
+            $AplicaFiltro = $data["ConfigVendas"]["cpf"];
+            $ConfigVendas = $ConfigVendas->where("config_clientes.cpf", "like", "%" . $AplicaFiltro . "%");
         }
 
-        if (isset($data["ConfigClientes"]["data_nascimento"])) {
-            $AplicaFiltro = $data["ConfigClientes"]["data_nascimento"];
-            $ConfigClientes = $ConfigClientes->whereDate("config_clientes.data_nascimento", $AplicaFiltro);
+        if (isset($data["ConfigVendas"]["data_nascimento"])) {
+            $AplicaFiltro = $data["ConfigVendas"]["data_nascimento"];
+            $ConfigVendas = $ConfigVendas->whereDate("config_clientes.data_nascimento", $AplicaFiltro);
         }
 
-        if (isset($data["ConfigClientes"]["telefone"])) {
-            $AplicaFiltro = $data["ConfigClientes"]["telefone"];
-            $ConfigClientes = $ConfigClientes->where("config_clientes.telefone", "like", "%" . $AplicaFiltro . "%");
+        if (isset($data["ConfigVendas"]["telefone"])) {
+            $AplicaFiltro = $data["ConfigVendas"]["telefone"];
+            $ConfigVendas = $ConfigVendas->where("config_clientes.telefone", "like", "%" . $AplicaFiltro . "%");
         }
 
-        if (isset($data["ConfigClientes"]["email"])) {
-            $AplicaFiltro = $data["ConfigClientes"]["email"];
-            $ConfigClientes = $ConfigClientes->where("config_clientes.email", "like", "%" . $AplicaFiltro . "%");
+        if (isset($data["ConfigVendas"]["email"])) {
+            $AplicaFiltro = $data["ConfigVendas"]["email"];
+            $ConfigVendas = $ConfigVendas->where("config_clientes.email", "like", "%" . $AplicaFiltro . "%");
         }
 
         // Campos de endereço
-        if (isset($data["ConfigClientes"]["logradouro"])) {
-            $AplicaFiltro = $data["ConfigClientes"]["logradouro"];
-            $ConfigClientes = $ConfigClientes->where("config_clientes.logradouro", "like", "%" . $AplicaFiltro . "%");
+        if (isset($data["ConfigVendas"]["logradouro"])) {
+            $AplicaFiltro = $data["ConfigVendas"]["logradouro"];
+            $ConfigVendas = $ConfigVendas->where("config_clientes.logradouro", "like", "%" . $AplicaFiltro . "%");
         }
 
-        if (isset($data["ConfigClientes"]["numero"])) {
-            $AplicaFiltro = $data["ConfigClientes"]["numero"];
-            $ConfigClientes = $ConfigClientes->where("config_clientes.numero", "like", "%" . $AplicaFiltro . "%");
+        if (isset($data["ConfigVendas"]["numero"])) {
+            $AplicaFiltro = $data["ConfigVendas"]["numero"];
+            $ConfigVendas = $ConfigVendas->where("config_clientes.numero", "like", "%" . $AplicaFiltro . "%");
         }
 
-        if (isset($data["ConfigClientes"]["complemento"])) {
-            $AplicaFiltro = $data["ConfigClientes"]["complemento"];
-            $ConfigClientes = $ConfigClientes->where("config_clientes.complemento", "like", "%" . $AplicaFiltro . "%");
+        if (isset($data["ConfigVendas"]["complemento"])) {
+            $AplicaFiltro = $data["ConfigVendas"]["complemento"];
+            $ConfigVendas = $ConfigVendas->where("config_clientes.complemento", "like", "%" . $AplicaFiltro . "%");
         }
 
-        if (isset($data["ConfigClientes"]["bairro"])) {
-            $AplicaFiltro = $data["ConfigClientes"]["bairro"];
-            $ConfigClientes = $ConfigClientes->where("config_clientes.bairro", "like", "%" . $AplicaFiltro . "%");
+        if (isset($data["ConfigVendas"]["bairro"])) {
+            $AplicaFiltro = $data["ConfigVendas"]["bairro"];
+            $ConfigVendas = $ConfigVendas->where("config_clientes.bairro", "like", "%" . $AplicaFiltro . "%");
         }
 
-        if (isset($data["ConfigClientes"]["cep"])) {
-            $AplicaFiltro = $data["ConfigClientes"]["cep"];
-            $ConfigClientes = $ConfigClientes->where("config_clientes.cep", "like", "%" . $AplicaFiltro . "%");
+        if (isset($data["ConfigVendas"]["cep"])) {
+            $AplicaFiltro = $data["ConfigVendas"]["cep"];
+            $ConfigVendas = $ConfigVendas->where("config_clientes.cep", "like", "%" . $AplicaFiltro . "%");
         }
 
-        if (isset($data["ConfigClientes"]["cidade"])) {
-            $AplicaFiltro = $data["ConfigClientes"]["cidade"];
-            $ConfigClientes = $ConfigClientes->where("config_clientes.cidade", "like", "%" . $AplicaFiltro . "%");
+        if (isset($data["ConfigVendas"]["cidade"])) {
+            $AplicaFiltro = $data["ConfigVendas"]["cidade"];
+            $ConfigVendas = $ConfigVendas->where("config_clientes.cidade", "like", "%" . $AplicaFiltro . "%");
         }
 
-        if (isset($data["ConfigClientes"]["estado"])) {
-            $AplicaFiltro = $data["ConfigClientes"]["estado"];
-            $ConfigClientes = $ConfigClientes->where("config_clientes.estado", $AplicaFiltro);
+        if (isset($data["ConfigVendas"]["estado"])) {
+            $AplicaFiltro = $data["ConfigVendas"]["estado"];
+            $ConfigVendas = $ConfigVendas->where("config_clientes.estado", $AplicaFiltro);
         }
 
 
 
-        $ConfigClientes = $ConfigClientes->get();
+        $ConfigVendas = $ConfigVendas->get();
 
         $Dadosconfig_clientes = [];
-        foreach ($ConfigClientes as $config_clientess) {
+        foreach ($ConfigVendas as $config_clientess) {
             if ($config_clientess->status == "0") {
                 $config_clientess->status = "Ativo";
             }
@@ -210,14 +210,14 @@ class ConfigClientes extends Controller
     public function exportarRelatorioExcel()
     {
 
-        $permUser = Auth::user()->hasPermissionTo("create.ConfigClientes");
+        $permUser = Auth::user()->hasPermissionTo("create.ConfigVendas");
 
         if (!$permUser) {
             return redirect()->route("list.Dashboard", ["id" => "1"]);
         }
 
 
-        $filePath = "Relatorio_ConfigClientes.xlsx";
+        $filePath = "Relatorio_ConfigVendas.xlsx";
 
         if (Storage::disk("public")->exists($filePath)) {
             Storage::disk("public")->delete($filePath);
@@ -233,7 +233,7 @@ class ConfigClientes extends Controller
 
         // Define o título da primeira aba
         $spreadsheet->setActiveSheetIndex(0);
-        $spreadsheet->getActiveSheet()->setTitle("ConfigClientes");
+        $spreadsheet->getActiveSheet()->setTitle("ConfigVendas");
 
         // Adiciona os cabeçalhos da tabela na primeira aba
         $spreadsheet->getActiveSheet()->fromArray($cabecalhoAba1, null, "A1");
@@ -251,7 +251,7 @@ class ConfigClientes extends Controller
 
 
         // Define o nome do arquivo
-        $nomeArquivo = "Relatorio_ConfigClientes.xlsx";
+        $nomeArquivo = "Relatorio_ConfigVendas.xlsx";
         // Cria o arquivo
         $writer = IOFactory::createWriter($spreadsheet, "Xlsx");
         $writer->save($nomeArquivo);
@@ -260,12 +260,6 @@ class ConfigClientes extends Controller
         $writer->save(storage_path("app" . $barra . "relatorio" . $barra . $nomeArquivo));
 
         return redirect()->route("download2.files", ["path" => $nomeArquivo]);
-    }
-
-
-    public function getClientes()
-    {
-        return $this->clienteService->getClientes();
     }
 }
 

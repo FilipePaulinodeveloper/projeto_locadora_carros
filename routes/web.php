@@ -169,6 +169,7 @@ Route::get('ConfigClientes', [ConfigClientes::class, 'index'])->name('list.Confi
 	Route::post('ConfigClientes/deletarTodos', [ConfigClientes::class, 'deletarTodos'])->name('deletarTodos.ConfigClientes');
 	Route::post('ConfigClientes/RestaurarTodos', [ConfigClientes::class, 'RestaurarTodos'])->name('RestaurarTodos.ConfigClientes');
 	Route::get('ConfigClientes/RelatorioExcel', [ConfigClientes::class, 'exportarRelatorioExcel'])->name('get.Excel.ConfigClientes');
+    Route::get('ConfigClientes/nome', [ConfigClientes::class, 'getClientes'])->name('get.nome.ConfigCliente');
 
     Route::get('ConfigVeiculos', [ConfigVeiculos::class, 'index'])->name('list.ConfigVeiculos');
 	Route::post('ConfigVeiculos', [ConfigVeiculos::class, 'index'])->name('listP.ConfigVeiculos');
