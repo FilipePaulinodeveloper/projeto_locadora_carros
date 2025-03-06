@@ -28,9 +28,9 @@ module.exports = {
                 // => @media (max-width: 639px) { ... }
             },
             colors: {
-                "primary": '#0145a3',
-                "secundary": '#fe0000',
-                "proconph": '#0145a3',
+                "primary": '#FF6100',
+                "secundary": '#000000',
+                "proconph": '#FF6100',
             },
             fontFamily: {
                 sans: ['Nunito', ...defaultTheme.fontFamily.sans],
