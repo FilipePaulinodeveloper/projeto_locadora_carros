@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\CriarClienteRequest;
-use App\Http\Requests\updateClienteRequest;
+use App\Http\Requests\criarVendaRequest;
+use App\Http\Requests\updateVendaRequest;
 use Exception;
 use App\Models\DisabledColumns;
 use Illuminate\Support\Facades\Auth;
@@ -67,7 +67,7 @@ class ConfigVendas extends Controller
         }
     }
 
-    public function store(CriarClienteRequest $request)
+    public function store(criarVendaRequest $request)
     {
         $validatedData = $request->validated();
         return $this->vendaService->store($validatedData);
@@ -82,7 +82,7 @@ class ConfigVendas extends Controller
     }
 
 
-    public function update(updateClienteRequest $request, $id)
+    public function update(updateVendaRequest $request, $id)
     {
        $validatedData = $request->validated();
        return $this->vendaService->update($validatedData, $id);

@@ -15,6 +15,7 @@ use App\Http\Controllers\ConfigCarros;
 use App\Http\Controllers\ConfigClientes;
 use App\Http\Controllers\ConfigManutencoes;
 use App\Http\Controllers\ConfigVeiculos;
+use App\Http\Controllers\ConfigVendas;
 // ALTERAHEAD
 
 
@@ -197,6 +198,18 @@ Route::get('ConfigClientes', [ConfigClientes::class, 'index'])->name('list.Confi
 	Route::post('ConfigManutencoes/deletarTodos', [ConfigManutencoes::class, 'deletarTodos'])->name('deletarTodos.ConfigManutencoes');
 	Route::post('ConfigManutencoes/RestaurarTodos', [ConfigManutencoes::class, 'RestaurarTodos'])->name('RestaurarTodos.ConfigManutencoes');
 	Route::get('ConfigManutencoes/RelatorioExcel', [ConfigManutencoes::class, 'exportarRelatorioExcel'])->name('get.Excel.ConfigManutencoes');
+
+    Route::get('ConfigVendas', [ConfigVendas::class, 'index'])->name('list.ConfigVendas');
+	Route::post('ConfigVendas', [ConfigVendas::class, 'index'])->name('listP.ConfigVendas');
+    Route::get('ConfigVendas/criar', [ConfigVendas::class, 'create'])->name('form.store.ConfigVendas');
+    Route::post('ConfigVendas/criar', [ConfigVendas::class, 'store'])->name('store.ConfigVendas');
+    Route::get('ConfigVendas/editar/{id}', [ConfigVendas::class, 'edit'])->name('form.update.ConfigVendas');
+    Route::post('ConfigVendas/editar/{id}', [ConfigVendas::class, 'update'])->name('update.ConfigVendas');
+    Route::post('ConfigVendas/deletar/{id}', [ConfigVendas::class, 'delete'])->name('delete.ConfigVendas');
+	Route::post('ConfigVendas/deletarSelecionados/{id?}', [ConfigVendas::class, 'deleteSelected'])->name('deleteSelected.ConfigVendas');
+	Route::post('ConfigVendas/deletarTodos', [ConfigVendas::class, 'deletarTodos'])->name('deletarTodos.ConfigVendas');
+	Route::post('ConfigVendas/RestaurarTodos', [ConfigVendas::class, 'RestaurarTodos'])->name('RestaurarTodos.ConfigVendas');
+	Route::get('ConfigVendas/RelatorioExcel', [ConfigVendas::class, 'exportarRelatorioExcel'])->name('get.Excel.ConfigVendas');
 
     Route::get('Dashboard/Calendario', [Dashboard::class, 'Calendario'])->name('list.DashboardCalendario');
     Route::get('Dashboard/{id?}', [Dashboard::class, 'index'])->name('list.Dashboard');

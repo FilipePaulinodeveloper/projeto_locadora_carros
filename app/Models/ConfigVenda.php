@@ -21,7 +21,6 @@ class ConfigVenda extends Model
 
     protected $casts = [
         'valor' => 'decimal:2',
-        'status' => 'boolean',
         'deleted' => 'boolean',
     ];
 

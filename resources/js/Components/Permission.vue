@@ -11,7 +11,7 @@
           <header class="px-5 py-4 border-b border-gray-100 flex items-center">
           <h2>Permissões</h2>
             <div class="ml-auto space-x-2 items-center text-sm">
-              <Checkbox id="selectAll" @click="markAll(range(1, 353))" v-model="selectedAll" placeholder="Select all" class="ml-auto" :binary="true" />
+              <Checkbox id="selectAll" @click="markAll(range(1, 368))" v-model="selectedAll" placeholder="Select all" class="ml-auto" :binary="true" />
               <label for="selectAll" v-if="!selectedAll">Marcar Todos</label>
               <label for="selectAll" v-else>Desmarcar Todos</label>
             </div>
@@ -168,6 +168,37 @@
                         </td>
                         <td class='p-2 whitespace-nowrap text-center'>
                         <Checkbox v-model='checked' :value='363' />
+
+                        </td>
+                </tr>
+
+
+                <tr>
+                        <td class='p-2 whitespace-nowrap'>
+                        <div class='flex items-center'>
+                            <div class='font-medium text-gray-800'>Vendas</div>
+                        </div>
+                        </td>
+                        <td class='p-2 text-center'>
+                        <Checkbox @click='markLine(range(364, 368), 10)' v-model='lineChecked' class='ml-auto' :value='10' />
+                        </td>
+                        <td class='p-2 whitespace-nowrap text-center'>
+                        <Checkbox v-model='checked' :value='364' />
+                        </td>
+                        <td class='p-2 whitespace-nowrap text-center'>
+                        <Checkbox v-model='checked' :value='365' />
+
+                        </td>
+                        <td class='p-2 whitespace-nowrap text-center'>
+                        <Checkbox v-model='checked' :value='366' />
+
+                        </td>
+                        <td class='p-2 whitespace-nowrap text-center'>
+                        <Checkbox v-model='checked' :value='367' />
+
+                        </td>
+                        <td class='p-2 whitespace-nowrap text-center'>
+                        <Checkbox v-model='checked' :value='368' />
 
                         </td>
                 </tr>
